@@ -26,8 +26,8 @@ class MravenciAlgoritmus:
                 souradnice2 = self.spravce_hospod.ziskej_souradnice(i)
 
                 # Předání těchto souřadnic do funkce vypocti_vzdalenost
-                inverzni_vzdalenost = (1 / self.spravce_hospod.vypocti_vzdalenost(*souradnice1,
-                                                                                  *souradnice2)) ** self.beta
+                inverzni_vzdalenost = (1 / self.spravce_hospod.vypocti_vzdalenost(souradnice1,
+                                                                                  souradnice2)) ** self.beta
                 pravdepodobnosti.append(feromon * inverzni_vzdalenost)
             else:
                 pravdepodobnosti.append(0)
