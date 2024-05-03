@@ -1,6 +1,8 @@
-from GeneticAlgorithm import GenetickyAlgoritmus
-from DataLoader import DataLoader
-from pythonProject.SpravceHospod import SpravceHospod
+from AntColony.AntColony import AntColony
+from Genetic.GeneticAlgorithm import GenetickyAlgoritmus
+from Loader.DataLoader import DataLoader
+from PubsManager.SpravceHospod import SpravceHospod
+import openpyxl
 
 
 def main():
@@ -27,6 +29,11 @@ def main():
 
     # Výpis výsledků
     print_results(nejlepsi_cesta, celkova_vzdalenost)
+
+    colony = AntColony(pubs_data, num_ants=5, num_iterations=20, alpha=1, beta=2, evaporation_rate=0.5)
+    best_tour, best_distance = colony.run()
+    # Výpis výsledků
+    print_results(best_tour, best_distance)
 
 
 def print_results(nejlepsi_cesta, celkova_vzdalenost):
