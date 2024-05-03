@@ -1,55 +1,59 @@
 import numpy as np
-import time
+
+from Hopfield.AnalizaVysledku import AnalizaVysledku
 
 
 class HopfieldNetwork:
     def __init__(self, distance_matrix):
-        self.N = len(distance_matrix)
         self.distance_matrix = distance_matrix
-        self.neurons = np.random.rand(self.N, self.N)
+        self.N = distance_matrix.shape[0]
+        self.states = np.random.rand(self.N, self.N) > 0.5  # Inicializace stavy neuronů
+        self.analyzer = AnalizaVysledku()  # Přidání analyzátoru
 
-    def energy(self):
-        E = 0
-        for i in range(self.N):
-            E += (np.sum(self.neurons[i, :]) - 1) ** 2 + (np.sum(self.neurons[:, i]) - 1) ** 2
+    def compute_energy(self):
+        # Energetická funkce TSP
+        energy = 0
         for i in range(self.N):
             for j in range(self.N):
                 if i != j:
                     for k in range(self.N):
-                        if k != i:
-                            E += self.distance_matrix[i, k] * self.neurons[i, j] * self.neurons[j, k]
-        return E
+                        if k != j:
+                            energy += self.distance_matrix[i][j] * self.states[i][k] * self.states[k][j]
+        return energy
 
-    def update_neurons(self):
-        for i in range(self.N):
-            for j in range(self.N):
-                total_input = 0
-                for k in range(self.N):
-                    if k != i:
-                        total_input += self.distance_matrix[i, k] * self.neurons[k, (j + 1) % self.N]
-                self.neurons[i, j] = 1 / (1 + np.exp(-total_input))
+    def update_states(self):
+        # Náhodná aktualizace neuronů
+        for _ in range(100):  # Počet aktualizací na iteraci
+            i, j = np.random.randint(0, self.N, size=2)
+            delta_energy = -2 * (self.states[i][j] - 0.5) * sum(
+                self.distance_matrix[i][k] * self.states[k][j] for k in range(self.N) if k != j)
+            if delta_energy < 0 or np.random.rand() < np.exp(-delta_energy):
+                self.states[i][j] = not self.states[i][j]
 
-    def solve(self, iterations=100):
+    def solve(self, iterations):
         for _ in range(iterations):
-            self.update_neurons()
-        return self.neurons
+            self.update_states()
+            current_energy = self.compute_energy()
+            self.analyzer.record_energy(current_energy)
+            print("Energy:", current_energy)
+        self.analyzer.plot_energy()
+        final_energy = self.compute_energy()
+        final_path = self.decode_solution()
+        return final_path, final_energy  # Vrátí trasy a energii jako tuple
 
+    def decode_solution(self):
+        # Předpokládá, že dekódování bylo úspěšné
+        path = np.argmax(self.states, axis=0)
+        if np.unique(path).size == self.N:  # Kontrola, zda je řešení validní (každé město je navštíveno jednou)
+            return path
+        return "Invalid solution (path may not visit each city exactly once)"
 
-def nearest_neighbor(distance_matrix):
-    N = len(distance_matrix)
-    start = 0
-    visited = set([start])
-    tour = [start]
-    cost = 0
-
-    while len(visited) < N:
-        last = tour[-1]
-        next_city = min([(distance_matrix[last][j], j) for j in range(N) if j not in visited], key=lambda x: x[0])
-        cost += next_city[0]
-        tour.append(next_city[1])
-        visited.add(next_city[1])
-
-    cost += distance_matrix[tour[-1]][tour[0]]
-    tour.append(tour[0])
-    return tour, cost
-
+    def print_hopfield_results(self, solution, description):
+        print(description)
+        path, energy = solution
+        if isinstance(path, str):
+            print(path)  # V případě neplatného řešení
+        else:
+            print("Optimal path:", path)
+        print("Energy of the final state:", energy)
+        print("\n")
