@@ -144,3 +144,10 @@ class GenetickyAlgoritmus:
             self.dej_informace_o_nejlepsi_cesta(nejlepsi_cesta),
             self.vypocti_celkovou_vzdalenost(nejlepsi_cesta)
         )
+
+    def print_genetic_results(self, path, distance, description):
+        print(description)
+        print("Best path found:", path)
+        print("Total distance covered:", distance)
+        print("\n")
+

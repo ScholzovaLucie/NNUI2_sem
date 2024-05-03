@@ -61,3 +61,9 @@ class AntColony:
         for tour, dist in zip(tours, distances):
             for i in range(len(tour) - 1):
                 self.pheromone_matrix[tour[i]][tour[i+1]] += 1.0 / dist
+
+    def print_ant_colony_results(self, path, distance, description):
+        print(description)
+        print("Best tour found by ants:", path)
+        print("Total distance of the tour:", distance)
+        print("\n")
