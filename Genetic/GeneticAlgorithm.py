@@ -1,5 +1,5 @@
 import random
-from AnalyzaVysledku import AnalizaVysledku
+from Genetic.AnalyzaVysledku import AnalizaVysledku
 
 
 def id_to_int(hospoda_id):
@@ -137,7 +137,7 @@ class GenetickyAlgoritmus:
         nejlepsi_cesta = self.najdi_minimum(populace)
 
         # Vykreslení grafu vývoje vzdálenosti v průběhu generací
-        self.analiza.vykresli_graf()
+        self.analiza.vykresli_genetic_graf()
 
         # Vrácení informací o nejlepší cestě a její celkové vzdálenosti
         return (
