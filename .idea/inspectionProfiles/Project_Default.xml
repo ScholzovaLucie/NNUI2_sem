@@ -1,0 +1,20 @@
+<component name="InspectionProjectProfileManager">
+  <profile version="1.0">
+    <option name="myName" value="Project Default" />
+    <inspection_tool class="PyPackageRequirementsInspection" enabled="true" level="WARNING" enabled_by_default="true" editorAttributes="WARNING_ATTRIBUTES">
+      <option name="ignoredPackages">
+        <value>
+          <list size="7">
+            <item index="0" class="java.lang.String" itemvalue="pyflakes" />
+            <item index="1" class="java.lang.String" itemvalue="pylint" />
+            <item index="2" class="java.lang.String" itemvalue="pylama" />
+            <item index="3" class="java.lang.String" itemvalue="pylint-django" />
+            <item index="4" class="java.lang.String" itemvalue="pycodestyle" />
+            <item index="5" class="java.lang.String" itemvalue="django-debug-toolbar" />
+            <item index="6" class="java.lang.String" itemvalue="pydocstyle" />
+          </list>
+        </value>
+      </option>
+    </inspection_tool>
+  </profile>
+</component>
