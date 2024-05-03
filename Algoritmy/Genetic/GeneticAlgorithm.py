@@ -1,5 +1,4 @@
 import random
-from Genetic.AnalyzaVysledku import AnalizaVysledku
 
 
 def id_to_int(hospoda_id):
@@ -15,7 +14,6 @@ class GenetickyAlgoritmus:
         self.velikost_populace = velikost_populace
         self.generace = generace
         self.mutace_pravdepodobnost = mutace_pravdepodobnost
-        self.analiza = AnalizaVysledku(self.velikost_populace, self.mutace_pravdepodobnost)
 
     def inicializace_populace(self):
         # Inicializace populace s náhodným pořadím návštěvy hospod
@@ -23,18 +21,9 @@ class GenetickyAlgoritmus:
         random.shuffle(populace)
         return populace
 
-    def vypocti_celkovou_vzdalenost(self, cesta):
-        # Výpočet celkové vzdálenosti pro danou cestu
-        vypoctene_vzdalenosti = [
-            self.spravce_hospod.vypocti_vzdalenost(self.spravce_hospod.ziskej_souradnice(a),
-                                                   self.spravce_hospod.ziskej_souradnice(b))
-            for a, b in zip(cesta, cesta[1:])
-        ]
-        return sum(vypoctene_vzdalenosti)
-
     def fitness(self, cesta):
         # Výpočet fitness hodnoty pro danou cestu
-        celkova_vzdalenost = self.vypocti_celkovou_vzdalenost(cesta)
+        celkova_vzdalenost = self.spravce_hospod.vypocti_celkovou_vzdalenost(cesta)
         return 100 - celkova_vzdalenost
 
     def selekce(self, populace):
@@ -96,14 +85,10 @@ class GenetickyAlgoritmus:
 
     def najdi_minimum(self, populace):
         # Nalezení nejkratší cesty v populaci
-        minimum_hodnota = min(populace, key=self.vypocti_celkovou_vzdalenost)
+        minimum_hodnota = min(populace, key=self.spravce_hospod.vypocti_celkovou_vzdalenost)
         return minimum_hodnota
 
-    def dej_informace_o_nejlepsi_cesta(self, nejlepsi_cesta):
-        # Vytvoření struktury s informacemi o nejlepší cestě
-        return [{"id": hospoda, "název": self.spravce_hospod.hospody[hospoda - 1]["název"]} for hospoda in nejlepsi_cesta]
-
-    def geneticky_algoritmus(self):
+    def solve(self):
         # Hlavní funkce pro spuštění genetického algoritmu
         populace = self.inicializace_populace()
 
@@ -127,27 +112,12 @@ class GenetickyAlgoritmus:
             populace[index_krizeni1] = po_mutaci[0]
             populace[index_krizeni2] = po_mutaci[1]
 
-            # Nalezení nejlepší cesty v aktuální populaci
-            nejlepsi_cesta = self.najdi_minimum(populace)
-
-            # Zaznamenání výsledku pro analýzu
-            self.analiza.zaznamenej_vysledek(self.vypocti_celkovou_vzdalenost(nejlepsi_cesta))
-
         # Nalezení nejkratší cesty
         nejlepsi_cesta = self.najdi_minimum(populace)
 
-        # Vykreslení grafu vývoje vzdálenosti v průběhu generací
-        self.analiza.vykresli_genetic_graf()
-
         # Vrácení informací o nejlepší cestě a její celkové vzdálenosti
         return (
-            self.dej_informace_o_nejlepsi_cesta(nejlepsi_cesta),
-            self.vypocti_celkovou_vzdalenost(nejlepsi_cesta)
+            self.spravce_hospod.dej_informace_o_nejlepsi_cesta(nejlepsi_cesta),
+            self.spravce_hospod.vypocti_celkovou_vzdalenost(nejlepsi_cesta),
+            'Genetický algoritmus'
         )
-
-    def print_genetic_results(self, path, distance, description):
-        print(description)
-        print("Best path found:", path)
-        print("Total distance covered:", distance)
-        print("\n")
-
