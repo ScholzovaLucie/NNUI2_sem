@@ -1,4 +1,4 @@
-from AlgorithmAnalyzer import AlgorithmAnalyzer
+from Analyzer.AlgorithmAnalyzer import AlgorithmAnalyzer
 
 
 def main():
