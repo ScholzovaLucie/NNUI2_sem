@@ -1,9 +1,11 @@
 import random
 from PubsManager.SpravceHospod import vypocti_vzdalenost
 
+
 def id_to_int(hospoda_id):
     # Konvertuje ID hospody na celé číslo, pokud je vstup float.
     return int(hospoda_id) if isinstance(hospoda_id, float) else hospoda_id
+
 
 class MravenciAlgoritmus:
     def __init__(self, hospody, spravce_hospod, pocet_mravencu, iterace, alfa, beta, odparovani):
