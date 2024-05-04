@@ -2,12 +2,12 @@ import random
 
 
 def id_to_int(hospoda_id):
-    # Funkce pro převod id na integer, pokud je id ve formátu float
+    # Konvertuje ID hospody na celé číslo, pokud je vstup float.
     return int(hospoda_id) if isinstance(hospoda_id, float) else hospoda_id
 
 
 def krizeni(rodice):
-    # Křížení dvou rodičů na náhodném místě
+    # Provede křížení dvou rodičů, aby vytvořil potomky.
     x = random.randint(0, len(rodice[0]) - 1)
     rodice[0][x:], rodice[1][x:] = rodice[1][x:], rodice[0][x:]
     return rodice
@@ -15,7 +15,7 @@ def krizeni(rodice):
 
 class GenetickyAlgoritmus:
     def __init__(self, hospoda, spravce_hospod, velikost_populace, generace, mutace_pravdepodobnost):
-        # Inicializace genetického algoritmu s parametry
+        # Inicializuje parametry genetického algoritmu.
         self.hospoda = hospoda
         self.spravce_hospod = spravce_hospod
         self.velikost_populace = velikost_populace
@@ -23,35 +23,28 @@ class GenetickyAlgoritmus:
         self.mutace_pravdepodobnost = mutace_pravdepodobnost
 
     def inicializace_populace(self):
-        # Inicializace populace s náhodným pořadím návštěvy hospod
+        # Inicializuje počáteční populaci náhodnými cestami.
         populace = [list(range(1, len(self.spravce_hospod.hospody) + 1)) for _ in range(self.velikost_populace)]
         random.shuffle(populace)
         return populace
 
     def fitness(self, cesta):
-        # Výpočet fitness hodnoty pro danou cestu
+        # Vypočítá fitness jedince jako 100 mínus celkovou vzdálenost.
         celkova_vzdalenost = self.spravce_hospod.vypocti_celkovou_vzdalenost(cesta)
         return 100 - celkova_vzdalenost
 
     def selekce(self, populace):
-        # Selekční metoda pro výběr rodičů
+        # Provede selekci rodičů na základě jejich fitness.
         hodnoty_fitness = [self.fitness(cesta) for cesta in populace]
         total_fitness = sum(hodnoty_fitness)
         pravdepodobnosti = [fitness / total_fitness for fitness in hodnoty_fitness]
-
-        # Vybrání rodiče na základě pravděpodobnosti fitness
-        rodic = random.choices(
-            populace,
-            weights=pravdepodobnosti,
-            k=1,
-        )[0]
-
+        rodic = random.choices(populace, weights=pravdepodobnosti, k=1)[0]
         index = populace.index(rodic)
 
         return rodic, index
 
     def mutace(self, rodice):
-        # Mutace cest podle dané pravděpodobnosti
+        # Provede mutaci na jedincích s danou pravděpodobností.
         for i in range(len(rodice)):
             if random.uniform(0.00, 1.00) < self.mutace_pravdepodobnost:
                 index1, index2 = random.sample(range(len(rodice[i])), 2)
@@ -59,12 +52,11 @@ class GenetickyAlgoritmus:
         return rodice
 
     def odstran_duplikaty(self, po_krizeni):
-        # Odstranění duplicitních hodnot z potomků
+        # Odstraní duplikáty z potomků po křížení.
         po_odstraneni = []
+
         for potomek in po_krizeni:
             duplicity = []
-            chybejici = []
-
             int_ids = [id_to_int(hospoda['id']) for hospoda in self.spravce_hospod.hospody]
             duplicita_nalezena = []
 
@@ -81,20 +73,19 @@ class GenetickyAlgoritmus:
                 potomek[index] = chybejici.pop(0)
 
             po_odstraneni.append(potomek)
-
         return po_odstraneni
 
     def najdi_minimum(self, populace):
-        # Nalezení nejkratší cesty v populaci
+        # Najde jedince s nejnižší celkovou vzdáleností.
         minimum_hodnota = min(populace, key=self.spravce_hospod.vypocti_celkovou_vzdalenost)
         return minimum_hodnota
 
     def solve(self):
-        # Hlavní funkce pro spuštění genetického algoritmu
+        # Spustí genetický algoritmus pro hledání nejlepší cesty.
         populace = self.inicializace_populace()
 
         for generace in range(self.generace):
-            # Selece rodičů
+            # Selece rodičů a provede křížení a mutaci.
             rodic1, index_krizeni1 = self.selekce(populace)
             rodic2, index_krizeni2 = self.selekce(populace)
 
@@ -115,8 +106,6 @@ class GenetickyAlgoritmus:
 
         # Nalezení nejkratší cesty
         nejlepsi_cesta = self.najdi_minimum(populace)
-
-        # Vrácení informací o nejlepší cestě a její celkové vzdálenosti
         return (
             self.spravce_hospod.dej_informace_o_nejlepsi_cesta(nejlepsi_cesta),
             self.spravce_hospod.vypocti_celkovou_vzdalenost(nejlepsi_cesta),
