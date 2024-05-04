@@ -1,5 +1,7 @@
 import numpy as np
 
+from PubsManager.SpravceHospod import vypocti_vzdalenost
+
 
 class HopfieldovaSit:
     def __init__(self, spravce_hospod, velikost, iterace):
@@ -14,7 +16,7 @@ class HopfieldovaSit:
                 souradnice1 = self.spravce_hospod.ziskej_souradnice(i)
                 souradnice2 = self.spravce_hospod.ziskej_souradnice(j)
                 if i != j:
-                    self.energie[i, j] = -self.spravce_hospod.vypocti_vzdalenost(souradnice1, souradnice2)
+                    self.energie[i, j] = -vypocti_vzdalenost(souradnice1, souradnice2)
                 else:
                     self.energie[i, j] = float('inf')  # zakážeme město navštívit samo sebe
 

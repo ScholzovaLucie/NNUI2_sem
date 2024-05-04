@@ -6,6 +6,13 @@ def id_to_int(hospoda_id):
     return int(hospoda_id) if isinstance(hospoda_id, float) else hospoda_id
 
 
+def krizeni(rodice):
+    # Křížení dvou rodičů na náhodném místě
+    x = random.randint(0, len(rodice[0]) - 1)
+    rodice[0][x:], rodice[1][x:] = rodice[1][x:], rodice[0][x:]
+    return rodice
+
+
 class GenetickyAlgoritmus:
     def __init__(self, hospoda, spravce_hospod, velikost_populace, generace, mutace_pravdepodobnost):
         # Inicializace genetického algoritmu s parametry
@@ -42,12 +49,6 @@ class GenetickyAlgoritmus:
         index = populace.index(rodic)
 
         return rodic, index
-
-    def krizeni(self, rodice):
-        # Křížení dvou rodičů na náhodném místě
-        x = random.randint(0, len(rodice[0]) - 1)
-        rodice[0][x:], rodice[1][x:] = rodice[1][x:], rodice[0][x:]
-        return rodice
 
     def mutace(self, rodice):
         # Mutace cest podle dané pravděpodobnosti
@@ -100,7 +101,7 @@ class GenetickyAlgoritmus:
             rodice = [rodic1, rodic2]
 
             # Křížení
-            po_krizeni = self.krizeni(rodice)
+            po_krizeni = krizeni(rodice)
 
             # Odstranění duplicit
             po_odstraneni_duplicit = self.odstran_duplikaty(po_krizeni)
