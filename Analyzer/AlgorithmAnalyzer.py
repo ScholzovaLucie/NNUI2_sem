@@ -2,9 +2,9 @@ import matplotlib.pyplot as plt
 from Algoritmy.Hopfield.HopfieldNetwork import HopfieldovaSit
 from Algoritmy.Genetic.GeneticAlgorithm import GenetickyAlgoritmus
 from Algoritmy.AntColony.AntColony import MravenciAlgoritmus
+from Analyzer.benchmark_algorithm import benchmark_algorithm
 from Loader.DataLoader import DataLoader
 from PubsManager.SpravceHospod import SpravceHospod, create_distance_matrix
-from benchmark_algorithm import benchmark_algorithm
 
 
 def compare_lengths(results):
