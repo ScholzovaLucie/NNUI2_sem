@@ -41,13 +41,17 @@ class AlgorithmAnalyzer:
         # Porovnává algoritmy pomocí funkce benchmark_algorithm a ukládá výsledky
         results = {
             "hopfield": benchmark_algorithm(
-                HopfieldovaSit, self.pubs_manager, velikost=len(self.pubs_manager.hospody), iterace=100
+                HopfieldovaSit, self.pubs_manager, iterace=1000
             ),
             "genetic": benchmark_algorithm(
-                GenetickyAlgoritmus, self.pubs_data, self.pubs_manager, velikost_populace=100, generace=500, mutace_pravdepodobnost=0.1
+                GenetickyAlgoritmus, self.pubs_data, self.pubs_manager, velikost_populace=1000, generace=500, mutace_pravdepodobnost=0.1
             ),
             "ant_colony": benchmark_algorithm(
-                MravenciAlgoritmus, self.pubs_data, self.pubs_manager, pocet_mravencu=500, iterace=100, alfa=1, beta=2, odparovani=0.5
+                MravenciAlgoritmus,
+                self.pubs_data,
+                self.pubs_manager,
+                pocet_mravencu=10,
+                iterace=1000, alfa=1, beta=2, odparovani=0.95
             )
         }
         return results

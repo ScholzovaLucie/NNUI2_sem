@@ -28,11 +28,16 @@ class MravenciAlgoritmus:
                 feromon = self.feromony[aktualni_hospoda][i] ** self.alfa
                 souradnice1 = self.spravce_hospod.ziskej_souradnice(aktualni_hospoda)
                 souradnice2 = self.spravce_hospod.ziskej_souradnice(i)
-                inverzni_vzdalenost = (1 / vypocti_vzdalenost(souradnice1, souradnice2)) ** self.beta
+                vzdalenost = vypocti_vzdalenost(souradnice1, souradnice2)
+                inverzni_vzdalenost = (1 / vzdalenost) ** self.beta if vzdalenost != 0 else 0
                 pravdepodobnosti.append(feromon * inverzni_vzdalenost)
             else:
                 pravdepodobnosti.append(0)
         suma = sum(pravdepodobnosti)
+        if suma == 0:
+            # Pokud je součet pravděpodobností nula, použijeme rovnoměrné pravděpodobnosti pro nevybrané hospody
+            pravdepodobnosti = [1 if i not in self.cesty[mravenec] else 0 for i in range(len(self.hospody))]
+            suma = sum(pravdepodobnosti)
         return [p / suma for p in pravdepodobnosti]
 
     def najdi_cestu(self):
