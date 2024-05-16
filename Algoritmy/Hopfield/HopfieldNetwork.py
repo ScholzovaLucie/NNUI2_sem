@@ -11,6 +11,7 @@ class HopfieldConfiguration:
     u0 = 0.02  # Základní hodnota pro aktivaci neuronů, použitá v sigmoideální aktivační funkci
     step = 1e-6  # Krok pro gradient descent algoritmus, použitý k aktualizaci vah sítě
 
+
 # Třída HopfieldovaSíť implementuje samotnou síť
 class HopfieldovaSit:
     def __init__(self, spravce_hospod, iterace, config=HopfieldConfiguration):
