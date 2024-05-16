@@ -21,9 +21,9 @@ class DataLoader(object):
                 continue
 
             # Extrahování informací o hospodě
-            pub_id = row[0]
-            pub_name = row[1]
-            pub_coords = row[2]
+            pub_id = row.iloc[0]
+            pub_name = row.iloc[1]
+            pub_coords = row.iloc[2]
             latitude, longitude = map(float, pub_coords.split(','))
             coordinate = [latitude, longitude]
 
