@@ -46,7 +46,12 @@ class HopfieldovaSit:
                         delta_u_ij += -self.config.C * (np.sum(self.neurony) - self.velikost)  # Penalizace za počet aktivací
 
                         u_ij += self.config.step * delta_u_ij  # Aktualizace hodnoty neuronu pomocí gradientního sestupu
-                        self.neurony[i, j] = 1 / (1 + np.exp(-self.config.u0 * u_ij))  # Sigmoideální aktivační funkce
+
+                        # Skoková aktivační funkce
+                        if u_ij >= 0:
+                            self.neurony[i, j] = 1
+                        else:
+                            self.neurony[i, j] = -1
 
     # Najde nejlepší cestu podle stavů neuronů
     def najdi_nejlepsi_cestu(self):

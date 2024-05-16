@@ -39,25 +39,37 @@ class AlgorithmAnalyzer:
 
     def analyze_algorithms(self):
         # Porovnává algoritmy pomocí funkce benchmark_algorithm a ukládá výsledky
+        iteration = 1000
         results = {
             "hopfield": benchmark_algorithm(
-                HopfieldovaSit, self.pubs_manager, iterace=1000
+                HopfieldovaSit,
+                self.pubs_manager,
+                iterace=iteration
             ),
             "genetic": benchmark_algorithm(
-                GenetickyAlgoritmus, self.pubs_data, self.pubs_manager, velikost_populace=1000, generace=500, mutace_pravdepodobnost=0.1
+                GenetickyAlgoritmus,
+                self.pubs_data,
+                self.pubs_manager,
+                velikost_populace=iteration,
+                generace=500,
+                mutace_pravdepodobnost=0.1
             ),
             "ant_colony": benchmark_algorithm(
                 MravenciAlgoritmus,
                 self.pubs_data,
                 self.pubs_manager,
                 pocet_mravencu=10,
-                iterace=1000, alfa=1, beta=2, odparovani=0.95
+                iterace=iteration,
+                alfa=1,
+                beta=2,
+                odparovani=0.95
             )
         }
         return results
 
     def run(self):
         # Spustí analýzu a vykreslí výsledky
-        results = self.analyze_algorithms()
-        plot_comparison(results)
-        compare_lengths(results)
+        for iteration in range(0, 3):
+            results = self.analyze_algorithms()
+            plot_comparison(results)
+            compare_lengths(results)
