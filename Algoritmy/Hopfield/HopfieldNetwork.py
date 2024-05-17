@@ -2,25 +2,19 @@ import numpy as np
 from PubsManager.SpravceHospod import vypocti_vzdalenost
 
 
-# Konfigurační třída obsahující parametry sítě
-class HopfieldConfiguration:
-    A = 500  # Penalizace za aktivaci více neuronů ve stejném řádku
-    B = 500  # Penalizace za aktivaci více neuronů ve stejném sloupci
-    C = 200  # Penalizace za aktivaci více nebo méně neuronů než je měst
-    D = 500  # Penalizace za vzdálenost
-    u0 = 0.02  # Základní hodnota pro aktivaci neuronů, použitá v sigmoideální aktivační funkci
-    step = 1e-6  # Krok pro gradient descent algoritmus, použitý k aktualizaci vah sítě
-
-
 # Třída HopfieldovaSíť implementuje samotnou síť
 class HopfieldovaSit:
-    def __init__(self, spravce_hospod, iterace, config=HopfieldConfiguration):
+    def __init__(self, spravce_hospod, iterace):
         self.spravce_hospod = spravce_hospod  # Správce hospod obsahující informace o hospodách
         self.velikost = len(spravce_hospod.hospody)  # Počet hospod
         self.iterace = iterace  # Počet iterací pro aktualizaci neuronů
-        self.config = config  # Konfigurace sítě
         self.energie = np.zeros((self.velikost, self.velikost))  # Matice energií pro každý pár uzlů
         self.neurony = np.random.uniform(0, 1, (self.velikost, self.velikost))  # Inicializace neuronů náhodnými hodnotami
+        self.penal_radek = 500  # Penalizace za aktivaci více neuronů ve stejném řádku
+        self.penal_sloupec = 500  # Penalizace za aktivaci více neuronů ve stejném sloupci
+        self.penal_vice_mest = 200  # Penalizace za aktivaci více nebo méně neuronů než je měst
+        self.penal_vzdalenost = 500  # Penalizace za vzdálenost
+        self.step = 1e-6  # Krok pro gradient descent algoritmus, použitý k aktualizaci vah sítě
 
     # Inicializace matic energií na základě vzdáleností mezi hospodami
     def inicializuj_energie(self):
@@ -40,12 +34,12 @@ class HopfieldovaSit:
                 for j in range(self.velikost):
                     if i != j:
                         u_ij = self.neurony[i, j]  # Aktuální hodnota neuronu
-                        delta_u_ij = -self.config.D * self.energie[i, j]  # Penalizace za vzdálenost
-                        delta_u_ij += -self.config.A * (np.sum(self.neurony[i, :]) - self.neurony[i, j])  # Penalizace pro řádky
-                        delta_u_ij += -self.config.B * (np.sum(self.neurony[:, j]) - self.neurony[i, j])  # Penalizace pro sloupce
-                        delta_u_ij += -self.config.C * (np.sum(self.neurony) - self.velikost)  # Penalizace za počet aktivací
+                        delta_u_ij = -self.penal_vzdalenost * self.energie[i, j]  # Penalizace za vzdálenost
+                        delta_u_ij += -self.penal_radek * (np.sum(self.neurony[i, :]) - self.neurony[i, j])  # Penalizace pro řádky
+                        delta_u_ij += -self.penal_sloupec * (np.sum(self.neurony[:, j]) - self.neurony[i, j])  # Penalizace pro sloupce
+                        delta_u_ij += -self.penal_vice_mest * (np.sum(self.neurony) - self.velikost)  # Penalizace za počet aktivací
 
-                        u_ij += self.config.step * delta_u_ij  # Aktualizace hodnoty neuronu pomocí gradientního sestupu
+                        u_ij += self.step * delta_u_ij  # Aktualizace hodnoty neuronu pomocí gradientního sestupu
 
                         # Skoková aktivační funkce
                         if u_ij >= 0:
